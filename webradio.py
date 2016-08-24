@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 #-------------------------------------------------------------------------------
 # FileName:     radio.py
 # Purpose:      This program controls a vintage radio based on RaspberryPi,
@@ -85,7 +85,7 @@ def LCD_init():
         draw.rectangle((0,0,LCD.LCDWIDTH,LCD.LCDHEIGHT), outline=255, fill=255)
 
         # configuracao da fonte
-        font = ImageFont.truetype('/root/font.ttf', 8)
+        font = ImageFont.load_default()
 
         return
         
@@ -148,6 +148,8 @@ def on_off(pin):
         if GPIO.input(sw_pin) == 0:
                 print "[%s] The radio is on." %datetime.datetime.now()
                 subprocess.call(["mpc", "load", "radios"])
+                subprocess.call(["mpc", "single", "on"])
+                subprocess.call(["mpc", "repeat", "on"])
  	        subprocess.call(["mpc", "play"])
  	        GPIO.output(LCD_gnd,0)  # turn on the LCD
                 station_LCD(subprocess.check_output(["mpc", "current"]).rstrip())
@@ -179,6 +181,14 @@ def station_LCD(station):
                 draw.text((30,10), 'BAND', font=font)
                 draw.text((30,20), 'NEWS', font=font)
                 draw.text((38,35), 'SP', font=font)
+        elif station == "Bradesco Esportes FM (SP)":
+                draw.text((22,10), 'BRADESCO', font=font)
+                draw.text((22,20), 'ESPORTES', font=font)
+                draw.text((38,35), 'SP', font=font)
+        elif station == "Bradesco Esportes FM (RJ)":
+                draw.text((22,10), 'BRADESCO', font=font)
+                draw.text((22,20), 'ESPORTES', font=font)
+                draw.text((38,35), 'RJ', font=font)
         elif station == "1.FM - Classic Rock":
                 draw.text((30,10), '1. FM', font=font)
                 draw.text((25,20), 'Classic', font=font)
