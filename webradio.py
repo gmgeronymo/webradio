@@ -2,11 +2,10 @@
 #-------------------------------------------------------------------------------
 # FileName:     radio.py
 # Purpose:      This program controls a vintage radio based on RaspberryPi,
-#               Pi MusicBox (http://www.pimusicbox.com/), a Nokia 5110 LCD
-#               display, two rotary encoders and a DIY amp based on the IC
-#               TDA2002A.
+#               MPD, a Nokia 5110 LCD  display, two rotary encoders and a
+#               DIY amp based on the IC TDA2002A.
 #
-
+#
 #
 # Note:         All dates are in European format DD-MM-YY[YY]
 #               The rotary encoder code is based on Rotary_Encoder-1a.py,
@@ -15,8 +14,9 @@
 # Author:       Gean Marcos Geronymo
 #
 # Created:      17-Jun-2016
+# Last modification: 06-Nov-2016
 #
-#n    This program is free software: you can redistribute it and/or modify
+#    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
@@ -117,6 +117,9 @@ def rotation_decode(encoder):
         Center encoder just skip to next radio
         Right encoder just skip to previous radio
         '''
+        Switch1_A = GPIO.input(Enc1_A)
+        Switch1_B = GPIO.input(Enc1_B)
+        
         if GPIO.input(sw_pin) == 1: # if the radio is off, ignore the rotary encoder
                 return
         else:
@@ -124,11 +127,22 @@ def rotation_decode(encoder):
 		        if subprocess.check_output(["mpc","current"]).rstrip() == "Nights with Alice Cooper":
 			        return
 		        else:
-                	        station_LCD('>')
-                	        subprocess.call(["mpc", "next"])
-                	        station_LCD(subprocess.check_output(["mpc", "current"]).rstrip())
-                	        return
-        
+                                if(Switch1_A == 1) and (Switch1_B == 0): # ->
+                	                station_LCD('>')
+                	                subprocess.call(["mpc", "next"])
+                	                station_LCD(subprocess.check_output(["mpc", "current"]).rstrip())
+                                        while Switch1_B == 0:
+                                                Switch1_B = GPIO.input(Enc1_B)
+                                        while Switch1_B == 1:
+                                                Switch1_B = GPIO.input(Enc1_B)
+                                        return,
+                                elif(Switch1_A == 1) and (Switch1_B == 1): # <-
+                                        station_LCD('<')
+                	                subprocess.call(["mpc", "prev"])
+                	                station_LCD(subprocess.check_output(["mpc", "current"]).rstrip())
+                                        while Switch1_A == 1:
+                                                Switch1_A = GPIO.input(Enc1_A)
+                                        return
                 elif encoder == Enc2_A: # left rotary encoder: playlist selector
 		        if subprocess.check_output(["mpc","current"]).rstrip() == "Band News FM (RJ)":
 			        return
