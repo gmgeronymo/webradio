@@ -8,7 +8,7 @@ def callback(way):
     global pos
     pos += way
     print("pos={}".format(pos))
-xs
+
 pi = pigpio.pi()
 decoder = rotary_encoder.decoder(pi, 7, 8, callback)
 time.sleep(300)
