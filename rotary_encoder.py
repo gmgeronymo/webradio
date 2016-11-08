@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
    pi = pigpio.pi()
 
-   decoder = rotary_encoder.decoder(pi, 8, 10, callback)
+   decoder = rotary_encoder.decoder(pi, 14, 15, callback)
 
    time.sleep(300)
 
