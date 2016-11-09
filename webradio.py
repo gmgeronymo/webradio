@@ -135,7 +135,7 @@ def rotation_decode(encoder):
                                                 Switch1_B = GPIO.input(Enc1_B)
                                         while Switch1_B == 1:
                                                 Switch1_B = GPIO.input(Enc1_B)
-                                        return,
+                                        return
                                 elif(Switch1_A == 1) and (Switch1_B == 1): # <-
                                         station_LCD('<')
                 	                subprocess.call(["mpc", "prev"])
